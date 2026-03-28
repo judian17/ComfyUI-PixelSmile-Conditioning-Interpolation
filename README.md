@@ -8,8 +8,8 @@ This project leverages AI to bring the PixelSmile expression control workflow in
 
 ## Node Usage Examples
 
-- `\assets\example1.png`
-- `\assets\example2.png`
+![example1](/assets/example1.png)
+![example2](/assets/example2.png)
 
 ## Workflow
 
