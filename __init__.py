@@ -7,8 +7,8 @@ class PixelSmileConditioning:
             "required": {
                 "conditioning_target": ("CONDITIONING", {"tooltip": "连接目标表情的 CLIPTextEncode 输出 (例如: happy)"}),
                 "conditioning_neutral": ("CONDITIONING", {"tooltip": "连接中性表情的 CLIPTextEncode 输出 (例如: neutral)"}),
-                "score": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.05, "tooltip": "表情强度权重"}),
-                "method": (["score_one_all", "score_one (last 7 tokens)"], {"default": "score_one_all"}),
+                "score": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 3.0, "step": 0.05, "tooltip": "表情强度权重"}),
+                "method": (["score_one_all", "score_one"], {"default": "score_one_all"}),
             }
         }
 
@@ -42,12 +42,12 @@ class PixelSmileConditioning:
                 neu_tensor = torch.nn.functional.pad(neu_tensor, (0, 0, 0, max_seq - seq_neu))
             
             # 2. 执行 PixelSmile 张量插值数学逻辑
-            if method == "score_one_all":
+            if method == "score_one_all": # Interpolate all tokens
                 # 公式: V_neu + s * (V_tgt - V_neu)
                 delta = tgt_tensor - neu_tensor
                 result_tensor = neu_tensor + score * delta
                 
-            elif method == "score_one (last 7 tokens)":
+            elif method == "score_one": # Interpolate only one token, the expression word
                 # 对应你提出的 suffix 切片逻辑
                 if max_seq > 7:
                     prefix = tgt_tensor[:, :-7, :]
